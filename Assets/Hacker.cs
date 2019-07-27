@@ -5,17 +5,19 @@ using UnityEngine;
 public class Hacker : MonoBehaviour
 {
     //Game Configuration data
-    string[] level1Passwords = { "Smit", "Nikunj", "Ritu", "Jayesh" };
-    string[] level2Passwords = { "Juggernaut", "ShadowFiend", "Slark", "Clinks"};
-    string[] level3Passwords = { "Husker", "LegionCommander", "EarthShaker", "Axe" };
-    string[] level4Passwords = { "StormSpirit", "QueenOfPain", "Zeus", "Lion" };
+    string returntomenu = "Enter 2wice to return to Main Menu";
+    string[] level1Anagram = { "Smit", "Nikunj", "Ritu", "Jayesh" };
+    string[] level2Anagram = { "Anti Mage","Arc Warden","Bloodseeker","Bounty Hunter","Broodmother", "Clinks","Drow Ranger","Ember Spirit","Faceless Void","Gyrocopter","Juggernaut","Lone Druid","Luna","Medusa","Meepo","Mirana","Monkey King","Morphling","Naga Siren","Nyx Assassin","Pangolier","Phantom Assassin","Phantom Lancer","Razor","Riki","Shadow Fiend", "Slark", "Sniper","Spectre","Templar Assassin","Terrorblade","Troll Warlord","Ursa","Vengeful Spirit","Venomancer","Viper","Weaver"};
+    string[] level3Anagram = { "Abaddon","Alchemist","Axe","Beastmaster","Brewmaster","Bristleback","Centaur Warrunner","Chaos Knight","Clockwerk","Doom","Dragon Knight","Earth Spirit", "EarthShaker","Elder Titan","Husker","Io","Kunkka","Legion Commander","Lifestealer","Lycan","Magnus","Mars","Night Stalker","Omniknight","Phoenix","Pudge","Sand King","Slardar","Spirit Breaker","Sven","Tidehunter","Timbersaw","Tiny","Treat Protector","Tusk","Underlord","Undying","Wraith King"};
+    string[] level4Anagram = { "Ancient Apparition","Bane","Batrider","Chen","Crystal Maiden","Dark Seer","Dark Willow","Dazzle","Death Prophet","Disrupter","Enchantress","Enigma","Grimstroke","Invoker","Jakiro","Keeper of the Light","Leshrac","Lich","Lina","Lion","Natures Prophet","Necrophos","Ogre Magi","Oracle","Outworld Devourer","Puck","Pugna", "Queen of Pain","Rubick","Shadow Demon","Shadow Shaman","Silencer","Skywrath Mage","Storm Spirit","Techies","Tinker","Visage","Warlock","Windranger","Winter Wyvern","Witch Doctor", "Zeus" };
 
 
     //Game States
     int level;
+    bool mmflag;
     string plyrname;
-    string password;
-    enum Screen { Intro, MainMenu, Password, Game, WinLoss }
+    string anagram;
+    enum Screen { Intro, MainMenu, Guessing, WinLoss }
     Screen currentScreen;
 
     //Intro Screen
@@ -42,31 +44,31 @@ public class Hacker : MonoBehaviour
 
     }
 
-    //Menu Choice
-    private void LevelChoice(string input)
+    void LevelChoice(string input)
     {
-        int index = int.Parse(input);
+        int index;
+        index = CheckForInt(input);
         switch (index)
         {
             case 1:
                 level = index;
-                password = level1Passwords[Random.Range(0, level1Passwords.Length)];
-                Level();
+                anagram = level1Anagram[Random.Range(0, level1Anagram.Length)];
+                EnterLevel();
                 break;
             case 2:
                 level = index;
-                password = level2Passwords[Random.Range(0, level2Passwords.Length)];
-                Level();
+                anagram = level2Anagram[Random.Range(0, level2Anagram.Length)];
+                EnterLevel();
                 break;
             case 3:
                 level = index;
-                password = level3Passwords[Random.Range(0, level3Passwords.Length)];
-                Level();
+                anagram = level3Anagram[Random.Range(0, level3Anagram.Length)];
+                EnterLevel();
                 break;
             case 4:
                 level = index;
-                password = level4Passwords[Random.Range(0, level4Passwords.Length)];
-                Level();
+                anagram = level4Anagram[Random.Range(0, level4Anagram.Length)];
+                EnterLevel();
                 break;
             default:
                 ShowMenu();
@@ -74,30 +76,129 @@ public class Hacker : MonoBehaviour
                 Debug.LogError("Invalid Level Number");
                 break;
         }
-    }
+    }//Menu Choices
 
-    //Start Game Level
-    void Level()
+    int CheckForInt(string input)
     {
-        currentScreen = Screen.Password;
-        Terminal.ClearScreen();
-        Terminal.WriteLine("Enter Password");
-    }
-
-    //Password Checker
-    void CheckPassword(string pass)
-    {
-        if (pass == password)
+        int index;
+        if (int.TryParse(input, out index))
         {
-            Terminal.WriteLine("Get started Noob");
+            index = int.Parse(input);
         }
         else
         {
             ShowMenu();
-            Debug.LogError("Wrong Password");
-            Terminal.WriteLine("Sry Pros not allowed");
+            Terminal.WriteLine("Please selecr valid number from choices");
+        }
+
+        return index;
+    }//Checks whether Input is Int type
+
+    //Start Game Level
+    void EnterLevel()
+    {
+        currentScreen = Screen.Guessing;
+        Terminal.ClearScreen();
+        Terminal.WriteLine(returntomenu);
+        Terminal.WriteLine("Guess the word : HINT[" +anagram.Anagram()+"]");
+    }
+
+
+    //Anagram Checker
+    void CheckAnagram(string pass)
+    {
+        if (pass == anagram)
+        {
+            DisplayWinScreen();
+        }
+        else
+        {
+            DisplayLossScreen();
         }
     }
+
+    void DisplayLossScreen()
+    {
+        Debug.LogError("Wrong Answer");
+        Terminal.WriteLine(@"
+     %%% %%%%%%%         |#|
+  %%%% %%%%%%%%%%%      |#|####
+%%%%% %         %%%    |#|=#####
+%%%% %   @    @   %%   | | ==####
+%%%% % (_  ()  )  %%  | |    ===##
+  %%% %  \_   _| %%   | |       =##
+   %%%% %  u^u  %%   | |         ==#
+    %%%% %%%%%%%     | |           V
+     Reaper awaits Your Noobness
+        ");
+        Terminal.WriteLine(returntomenu);
+    }
+
+    void DisplayWinScreen()
+    {
+        currentScreen = Screen.WinLoss;
+        Terminal.ClearScreen();
+        RewardScreen();
+    }
+
+    void RewardScreen()
+    {
+        switch (level)
+        {
+            case 1:
+                Terminal.WriteLine(@"
+       _,     _   _     ,_
+   .-'` /     \'-'/     \ `'-.
+  /    |      |   |      |    \
+ ;      \_  _/     \_  _/      ;
+|         ``         ``         |
+|          Won Level 1          |
+ ;    .-.   .-.   .-.   .-.    ;
+  \  (   '.'   \ /   '.'   )  /
+   '-.;         V         ;.-'
+                ");
+                break;
+            case 2:
+                Terminal.WriteLine(@"
+       _,     _   _     ,_
+   .-'` /     \'-'/     \ `'-.
+  /    |      |   |      |    \
+ ;      \_  _/     \_  _/      ;
+|         ``         ``         |
+|          Won Level 2          |
+ ;    .-.   .-.   .-.   .-.    ;
+  \  (   '.'   \ /   '.'   )  /
+   '-.;         V         ;.-'
+                ");
+                break;
+            case 3:
+                Terminal.WriteLine(@"
+       _,     _   _     ,_
+   .-'` /     \'-'/     \ `'-.
+  /    |      |   |      |    \
+ ;      \_  _/     \_  _/      ;
+|         ``         ``         |
+|          Won Level 3          |
+ ;    .-.   .-.   .-.   .-.    ;
+  \  (   '.'   \ /   '.'   )  /
+   '-.;         V         ;.-'
+                "); break;
+            case 4:
+                Terminal.WriteLine(@"
+    ________________
+   /.,------------,.\
+  ///  .=------->__|\\
+  \\\   `------.   .//
+   `\\`--...._  `;//'
+     `\\.-,___;.//'
+       `\\-..-//'
+         `\\//'
+           ''
+                "); break;
+        }
+        Terminal.WriteLine(returntomenu);
+    }
+
 
     //Just take input
     void OnUserInput(string input)
@@ -112,17 +213,30 @@ public class Hacker : MonoBehaviour
         {
             EvalPlayerName(input);
         }
-        else if (input == "menu" && !string.IsNullOrWhiteSpace(plyrname))
+        else if (input == "" && (currentScreen != Screen.Intro || currentScreen != Screen.MainMenu))
         {
-            ShowMenu();
+            BackToMenu();
         }
         else if (currentScreen == Screen.MainMenu)
         {
             LevelChoice(input);
         }
-        else if (currentScreen == Screen.Password)
+        else if (currentScreen == Screen.Guessing)
         {
-            CheckPassword(input);
+            CheckAnagram(input);
+        }
+    }
+
+    private void BackToMenu()
+    {
+        if (mmflag == false)
+        {
+            mmflag = true;
+        }
+        else
+        {
+            ShowMenu();
+            mmflag = false;
         }
     }
 
@@ -131,7 +245,7 @@ public class Hacker : MonoBehaviour
         if (string.IsNullOrWhiteSpace(input) || input == "menu")
         {
             PlayerName();
-            Terminal.WriteLine("Get Better Name");
+            Terminal.WriteLine("Get a Better Name");
         }
         else
         {
