@@ -5,20 +5,45 @@ using UnityEngine;
 public class Hacker : MonoBehaviour
 {
     //Game Configuration data
-    string returntomenu = "Enter 2wice to return to Main Menu";
-    string[] level1Anagram = { "Smit", "Nikunj", "Ritu", "Jayesh" };
-    string[] level2Anagram = { "Anti Mage","Arc Warden","Bloodseeker","Bounty Hunter","Broodmother", "Clinks","Drow Ranger","Ember Spirit","Faceless Void","Gyrocopter","Juggernaut","Lone Druid","Luna","Medusa","Meepo","Mirana","Monkey King","Morphling","Naga Siren","Nyx Assassin","Pangolier","Phantom Assassin","Phantom Lancer","Razor","Riki","Shadow Fiend", "Slark", "Sniper","Spectre","Templar Assassin","Terrorblade","Troll Warlord","Ursa","Vengeful Spirit","Venomancer","Viper","Weaver"};
-    string[] level3Anagram = { "Abaddon","Alchemist","Axe","Beastmaster","Brewmaster","Bristleback","Centaur Warrunner","Chaos Knight","Clockwerk","Doom","Dragon Knight","Earth Spirit", "EarthShaker","Elder Titan","Husker","Io","Kunkka","Legion Commander","Lifestealer","Lycan","Magnus","Mars","Night Stalker","Omniknight","Phoenix","Pudge","Sand King","Slardar","Spirit Breaker","Sven","Tidehunter","Timbersaw","Tiny","Treat Protector","Tusk","Underlord","Undying","Wraith King"};
-    string[] level4Anagram = { "Ancient Apparition","Bane","Batrider","Chen","Crystal Maiden","Dark Seer","Dark Willow","Dazzle","Death Prophet","Disrupter","Enchantress","Enigma","Grimstroke","Invoker","Jakiro","Keeper of the Light","Leshrac","Lich","Lina","Lion","Natures Prophet","Necrophos","Ogre Magi","Oracle","Outworld Devourer","Puck","Pugna", "Queen of Pain","Rubick","Shadow Demon","Shadow Shaman","Silencer","Skywrath Mage","Storm Spirit","Techies","Tinker","Visage","Warlock","Windranger","Winter Wyvern","Witch Doctor", "Zeus" };
-
+    const string returntomenu = "Enter 2wice to return to Main Menu";
+    string[] level1Anagram = { "Anti Mage","Arc Warden","Bloodseeker","Bounty Hunter","Broodmother", "Clinks","Drow Ranger","Ember Spirit","Faceless Void","Gyrocopter","Juggernaut","Lone Druid","Luna","Medusa","Meepo","Mirana","Monkey King","Morphling","Naga Siren","Nyx Assassin","Pangolier","Phantom Assassin","Phantom Lancer","Razor","Riki","Shadow Fiend", "Slark", "Sniper","Spectre","Templar Assassin","Terrorblade","Troll Warlord","Ursa","Vengeful Spirit","Venomancer","Viper","Weaver"};
+    string[] level2Anagram = { "Abaddon","Alchemist","Axe","Beastmaster","Brewmaster","Bristleback","Centaur Warrunner","Chaos Knight","Clockwerk","Doom","Dragon Knight","Earth Spirit", "EarthShaker","Elder Titan","Husker","Io","Kunkka","Legion Commander","Lifestealer","Lycan","Magnus","Mars","Night Stalker","Omniknight","Phoenix","Pudge","Sand King","Slardar","Spirit Breaker","Sven","Tidehunter","Timbersaw","Tiny","Treat Protector","Tusk","Underlord","Undying","Wraith King"};
+    string[] level3Anagram = { "Ancient Apparition","Bane","Batrider","Chen","Crystal Maiden","Dark Seer","Dark Willow","Dazzle","Death Prophet","Disrupter","Enchantress","Enigma","Grimstroke","Invoker","Jakiro","Keeper of the Light","Leshrac","Lich","Lina","Lion","Natures Prophet","Necrophos","Ogre Magi","Oracle","Outworld Devourer","Puck","Pugna", "Queen of Pain","Rubick","Shadow Demon","Shadow Shaman","Silencer","Skywrath Mage","Storm Spirit","Techies","Tinker","Visage","Warlock","Windranger","Winter Wyvern","Witch Doctor", "Zeus" };
+    string[] lossascii = 
+    {
+        @"
+███╗   ██╗ ██████╗  ██████╗ ██████╗ 
+████╗  ██║██╔═══██╗██╔═══██╗██╔══██╗
+██╔██╗ ██║██║   ██║██║   ██║██████╔╝
+██║╚██╗██║██║   ██║██║   ██║██╔══██╗
+██║ ╚████║╚██████╔╝╚██████╔╝██████╔╝
+╚═╝  ╚═══╝ ╚═════╝  ╚═════╝ ╚═════╝",
+        @"
+███████╗ ██████╗ ██████╗            
+██╔════╝██╔═══██╗██╔══██╗           
+█████╗  ██║   ██║██████╔╝           
+██╔══╝  ██║   ██║██╔══██╗           
+██║     ╚██████╔╝██║  ██║           
+╚═╝      ╚═════╝ ╚═╝  ╚═╝ 
+        ",
+        @"
+██╗     ██╗███████╗███████╗         
+██║     ██║██╔════╝██╔════╝         
+██║     ██║█████╗  █████╗           
+██║     ██║██╔══╝  ██╔══╝           
+███████╗██║██║     ███████╗   
+        ",
+    };
 
     //Game States
     int level;
+    int i;
     bool mmflag;
     string plyrname;
     string anagram;
-    enum Screen { Intro, MainMenu, Guessing, WinLoss }
+    enum Screen { Intro, MainMenu, Guessing, Win ,Loss, End}
     Screen currentScreen;
+    Screen previousScreen;
 
     //Intro Screen
     void PlayerName()
@@ -38,8 +63,7 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine("");
         Terminal.WriteLine("1. Total Newb");
         Terminal.WriteLine("2. Bot Level Noob");
-        Terminal.WriteLine("3. Experienced Noob");
-        Terminal.WriteLine("4. High class Noob");
+        Terminal.WriteLine("3. High class Noob");
         Terminal.WriteLine("");
 
     }
@@ -65,11 +89,6 @@ public class Hacker : MonoBehaviour
                 anagram = level3Anagram[Random.Range(0, level3Anagram.Length)];
                 EnterLevel();
                 break;
-            case 4:
-                level = index;
-                anagram = level4Anagram[Random.Range(0, level4Anagram.Length)];
-                EnterLevel();
-                break;
             default:
                 ShowMenu();
                 Terminal.WriteLine("Wrong Level");
@@ -88,19 +107,19 @@ public class Hacker : MonoBehaviour
         else
         {
             ShowMenu();
-            Terminal.WriteLine("Please selecr valid number from choices");
+            Terminal.WriteLine("Please select valid number from choices");
         }
 
         return index;
-    }//Checks whether Input is Int type
+    }//Checks whether LevelChoice is Int type
 
     //Start Game Level
     void EnterLevel()
     {
         currentScreen = Screen.Guessing;
         Terminal.ClearScreen();
+        Terminal.WriteLine("Guess the Hero : HINT[" +anagram.Anagram()+"]");
         Terminal.WriteLine(returntomenu);
-        Terminal.WriteLine("Guess the word : HINT[" +anagram.Anagram()+"]");
     }
 
 
@@ -119,81 +138,69 @@ public class Hacker : MonoBehaviour
 
     void DisplayLossScreen()
     {
+        currentScreen = Screen.Loss;
         Debug.LogError("Wrong Answer");
-        Terminal.WriteLine(@"
-     %%% %%%%%%%         |#|
-  %%%% %%%%%%%%%%%      |#|####
-%%%%% %         %%%    |#|=#####
-%%%% %   @    @   %%   | | ==####
-%%%% % (_  ()  )  %%  | |    ===##
-  %%% %  \_   _| %%   | |       =##
-   %%%% %  u^u  %%   | |         ==#
-    %%%% %%%%%%%     | |           V
-     Reaper awaits Your Noobness
-        ");
-        Terminal.WriteLine(returntomenu);
+        LossMessage();
+    }
+
+    void LossMessage()
+    {
+        while (mmflag == true)
+        {
+            Terminal.ClearScreen();
+            Terminal.WriteLine(lossascii[i]);
+            mmflag = false;
+            i++;
+        }
     }
 
     void DisplayWinScreen()
     {
-        currentScreen = Screen.WinLoss;
+        currentScreen = Screen.Win;
         Terminal.ClearScreen();
-        RewardScreen();
+        WinMessage();
     }
 
-    void RewardScreen()
+    void WinMessage()
     {
         switch (level)
         {
             case 1:
                 Terminal.WriteLine(@"
-       _,     _   _     ,_
-   .-'` /     \'-'/     \ `'-.
-  /    |      |   |      |    \
- ;      \_  _/     \_  _/      ;
-|         ``         ``         |
-|          Won Level 1          |
- ;    .-.   .-.   .-.   .-.    ;
-  \  (   '.'   \ /   '.'   )  /
-   '-.;         V         ;.-'
+ ▄▄▄        ▄████  ██▓
+▒████▄     ██▒ ▀█▒▓██▒
+▒██  ▀█▄  ▒██░▄▄▄░▒██▒
+░██▄▄▄▄██ ░▓█  ██▓░██░    Pro
+ ▓█   ▓██▒░▒▓███▀▒░██░
+ ▒▒   ▓▒█░ ░▒   ▒ ░▓  
+  ▒   ▒▒ ░  ░   ░  ▒ ░
+  ░   ▒   ░ ░   ░  ▒ ░
+      ░  ░      ░  ░  
                 ");
                 break;
             case 2:
                 Terminal.WriteLine(@"
-       _,     _   _     ,_
-   .-'` /     \'-'/     \ `'-.
-  /    |      |   |      |    \
- ;      \_  _/     \_  _/      ;
-|         ``         ``         |
-|          Won Level 2          |
- ;    .-.   .-.   .-.   .-.    ;
-  \  (   '.'   \ /   '.'   )  /
-   '-.;         V         ;.-'
-                ");
-                break;
+  ██████ ▄▄▄█████▓ ██▀███  
+▒██    ▒ ▓  ██▒ ▓▒▓██ ▒ ██▒
+░ ▓██▄   ▒ ▓██░ ▒░▓██ ░▄█ ▒
+  ▒   ██▒░ ▓██▓ ░ ▒██▀▀█▄     Pro
+▒██████▒▒  ▒██▒ ░ ░██▓ ▒██▒
+▒ ▒▓▒ ▒ ░  ▒ ░░   ░ ▒▓ ░▒▓░
+░ ░▒  ░ ░    ░      ░▒ ░ ▒░
+░  ░  ░    ░        ░░   ░ 
+      ░              ░     
+                "); break;
             case 3:
                 Terminal.WriteLine(@"
-       _,     _   _     ,_
-   .-'` /     \'-'/     \ `'-.
-  /    |      |   |      |    \
- ;      \_  _/     \_  _/      ;
-|         ``         ``         |
-|          Won Level 3          |
- ;    .-.   .-.   .-.   .-.    ;
-  \  (   '.'   \ /   '.'   )  /
-   '-.;         V         ;.-'
-                "); break;
-            case 4:
-                Terminal.WriteLine(@"
-    ________________
-   /.,------------,.\
-  ///  .=------->__|\\
-  \\\   `------.   .//
-   `\\`--...._  `;//'
-     `\\.-,___;.//'
-       `\\-..-//'
-         `\\//'
-           ''
+ ██▓ ███▄    █ ▄▄▄█████▓
+▓██▒ ██ ▀█   █ ▓  ██▒ ▓▒
+▒██▒▓██  ▀█ ██▒▒ ▓██░ ▒░
+░██░▓██▒  ▐▌██▒░ ▓██▓ ░    Pro
+░██░▒██░   ▓██░  ▒██▒ ░ 
+░▓  ░ ▒░   ▒ ▒   ▒ ░░   
+ ▒ ░░ ░░   ░ ▒░    ░    
+ ▒ ░   ░   ░ ░   ░      
+ ░           ░          
                 "); break;
         }
         Terminal.WriteLine(returntomenu);
@@ -207,13 +214,13 @@ public class Hacker : MonoBehaviour
     }
 
     //Check Input given at every stage
-    private void EvalInput(string input)
+    void EvalInput(string input)
     {
         if (currentScreen == Screen.Intro)
         {
             EvalPlayerName(input);
         }
-        else if (input == "" && (currentScreen != Screen.Intro || currentScreen != Screen.MainMenu))
+        else if (input == "" && currentScreen != Screen.Intro)
         {
             BackToMenu();
         }
@@ -227,11 +234,22 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    private void BackToMenu()
+    void BackToMenu()
     {
-        if (mmflag == false)
+        if (mmflag == false && currentScreen==Screen.Loss && i<3)
         {
             mmflag = true;
+            LossMessage();
+            previousScreen = currentScreen;
+        }
+        else if(mmflag==false)
+        {
+            mmflag = true;
+            previousScreen = currentScreen;
+        }
+        else if(mmflag==true && previousScreen != currentScreen)
+        {
+            mmflag = false;
         }
         else
         {
@@ -240,7 +258,7 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    private void EvalPlayerName(string input)
+    void EvalPlayerName(string input)
     {
         if (string.IsNullOrWhiteSpace(input) || input == "menu")
         {
